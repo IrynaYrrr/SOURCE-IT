@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // ДЗ: проапгрейдить функцию суммирования, чтобы она обрабатывала не только числа после
+        // просчитанного диапазона, но и в начале - memSum(0,10); искать не до первого совпадения, а до лучшего
+
+        function sumRange() {
+
+            let memory = []; // создаем пустой массив, который будет хранить результаты вызовов функции,
+            // чтобы он не очищался каждый раз, мы используем замыкание, потому весь остальной функционал 
+            // у нас хранится во вложенной функции
+
+            return function (a, b) {  // вложенная (не внешняя!) функция принимает два числа аргументами
+                console.log(a, b);
+
+                if (a > b) { // и если первое больше второго, то меняет их местами
+                    [a, b] = [b, a];
+                }
+
+                let result = a; // в результат сразу записываем начало диапазона
+
+                // создаем объект, который потом будем помещать в "память"
+                let obj = {
+                    start: a, // начало диапазона
+                    end: b // конец диапазона
+                }
+
+                let selectedItem; // выбранный объект из памяти
+
+                if (memory.length > 0) { // если массив предыдущих вычислений не пуст
+                    // сортировка массива по сумме по убыванию
+                    memory.sort((a, b) => b.sum - a.sum);
+
+                    for (const item of memory) {
+                        if (item.start >= a && item.end <= b) {
+                            // если среди прошлых вычислений найден объект, 
+                            // у которого начало диапазона >= нашему и конец диапазона <=
+                            // нашему, то
+                            console.log('выбираем ' + JSON.stringify(item));
+                            selectedItem = item;
+                            break;
+                        }
+                    }
+                }
+
+                // если из памяти выбрали объект 
+                if (selectedItem) {
+                    // в результат записываем сумму из выбанного объекта
+                    result = selectedItem.sum;
+
+                    //суммируем числа до начала диапазона
+                    for (let i = a; i < selectedItem.start; i++) {
+                        result += i;
+                    }
+
+                    // суммируем числа после конца диапазона
+                    for (let i = selectedItem.end + 1; i <= b; i++) {
+                        result += i;
+
+                    }
+                }
+                else {
+                    for (let i = a + 1; i <= b; i++) { // здесь мы суммируем диапазон, А уже записан в результат, 
+                        //начинаем суммировать со следующего числа
+                        result += i;
+                    }
+                }
+
+                // результат суммы чисел диапазона 
+                obj.sum = result;
+
+                // если объект из памяти не был выбран или такого объекта в памяти нету то добавляем его в память
+                if (!selectedItem || selectedItem.start != obj.start || selectedItem.end != obj.end) {
+                    memory.push(obj); // дописываем  объект в массив
+                }
+
+                console.log('memory содержит ' + JSON.stringify(memory));// выводим в консоль массив "память"
+            }
+
+        }
+
+        let memSum = sumRange();
+        memSum(2, 5);
+        memSum(3, 7);
+        memSum(2, 6);
+        memSum(4, 8);
+        memSum(2, 8);
+        memSum(2, 8);
+        memSum(0, 10);
+
+    </script>
+</body>
+
+</html>
