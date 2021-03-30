@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+
+
+        // Наследуем через классы:
+        
+
+        const User = function (login, password, gmail) {
+            this.login = login;
+            this.password = password;
+            this.gmail = gmail;
+        };
+
+        User.prototype.call = function(){
+            console.log(`I am User ${this.login}`);
+        }
+
+        const Admin = function(...args) {
+            User.call(this,...args);
+        }
+
+        Admin.prototype = Object.create(User.prototype);
+        Admin.prototype.callAdmin = function(){
+            console.log('I am Admin');
+        }
+
+        const userOne = new User('Irina', 'Litva', 'mygmail@gmail.com');
+        console.log(userOne);
+        userOne.call();
+
+        const adminOne = new Admin('Andrey', 'Latvia','his@gmail.com');
+        console.log(adminOne);
+        adminOne.call();
+        adminOne.callAdmin();
+
+
+        // Наследуем через классы:
+
+
+        class UserTwo {
+            constructor(login, password, gmail) {
+                this.login = login;
+                this.password = password;
+                this.gmail = gmail;
+            }
+
+            call() {
+                console.log(`I am UserTwo ${this.login}`);
+            }
+        }
+
+        class AdminTwo extends UserTwo {
+            constructor(...args) {
+                super(...args);
+            }
+
+            callAdmin() {
+                console.log(`I am AdminTwo ${this.login}`);
+            }
+    
+        }
+
+        const userTwo = new UserTwo('Irina', 'Litva', 'mygmail@gmail.com');
+        console.log(userTwo);
+        userTwo.call();
+
+        const adminTwo = new AdminTwo('Andrey', 'Latvia','his@gmail.com');
+        console.log(adminTwo);
+        adminTwo.call();
+        adminTwo.callAdmin();
+
+    </script>
+
+</body>
+
+</html>
